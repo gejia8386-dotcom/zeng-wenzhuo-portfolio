@@ -1,0 +1,230 @@
+/* =========================================================================
+   第二阶段 · 沉浸式交互层
+   -------------------------------------------------------------------------
+   设计语言：国际设计工作室 / Behance 编辑式排版 / 数字艺术展览
+   手段：位移、遮罩、细线、字距、纯色块。无粒子、无发光渐变、无满屏动画。
+   -------------------------------------------------------------------------
+   · 只使用 transform / opacity / clip-path，滚动监听走 rAF 节流
+   · 不改变任何图片文件，不新增网络请求，不阻塞图片懒加载
+   · html.motion-off 或系统「减少动态效果」时全部关闭
+   · 移动端（hover:none / pointer:coarse）单独降级
+   ========================================================================= */
+
+html {
+  --m-ease: cubic-bezier(.22, 1, .36, 1);
+  --m-dur: .92s;
+}
+html.motion-calm { --m-dur: .58s; }
+
+/* =========================================================== 1. 首页开场 */
+/* h1 是静态 HTML，动画由 CSS 自行触发，避免 JS 加载造成闪烁 */
+html:not(.motion-off) .hero__display h1 span {
+  animation: m-line-in var(--m-dur) var(--m-ease) both;
+}
+html:not(.motion-off) .hero__display h1 span:nth-child(1) { animation-delay: .08s; }
+html:not(.motion-off) .hero__display h1 span:nth-child(2) { animation-delay: .20s; }
+html:not(.motion-off) .hero__display h1 span:nth-child(3) { animation-delay: .32s; }
+@keyframes m-line-in {
+  from { opacity: 0; transform: translateY(.32em); letter-spacing: .015em; clip-path: inset(0 0 100% 0); }
+  to   { opacity: 1; transform: none;             letter-spacing: -.065em; clip-path: inset(-18% -3% -18% -3%); }
+}
+html:not(.motion-off) .hero__meta span,
+html:not(.motion-off) .hero__lede,
+html:not(.motion-off) .hero__cats {
+  animation: m-fade-up .9s var(--m-ease) both;
+}
+html:not(.motion-off) .hero__meta span { animation-delay: .42s; }
+html:not(.motion-off) .hero__lede { animation-delay: .52s; }
+html:not(.motion-off) .hero__cats { animation-delay: .62s; }
+@keyframes m-fade-up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+/* 作品图片错位进入：不同方向、不同延迟，仅作用于首页拼贴 */
+html.motion-ready .collage__item[data-reveal] {
+  opacity: 0;
+  transform: translate3d(var(--m-x, 0px), 44px, 0) scale(.985);
+  transition: opacity .95s var(--m-ease), transform 1.05s var(--m-ease);
+}
+html.motion-ready .collage__item.is-in { opacity: 1; transform: none; }
+html.motion-ready .collage__item.a { --m-x: -34px; transition-delay: .02s; }
+html.motion-ready .collage__item.b { --m-x:  30px; transition-delay: .12s; }
+html.motion-ready .collage__item.c { --m-x: -22px; transition-delay: .20s; }
+html.motion-ready .collage__item.d { --m-x:  26px; transition-delay: .28s; }
+html.motion-ready .collage__item.e { --m-x: -14px; transition-delay: .36s; }
+
+/* =========================================================== 2. 自定义光标 */
+.m-cursor, .m-cursor-dot {
+  position: fixed; top: 0; left: 0; z-index: 500; pointer-events: none;
+  border-radius: 50%; mix-blend-mode: difference; will-change: transform;
+  opacity: 0; transition: opacity .3s ease;
+}
+.m-cursor {
+  width: 34px; height: 34px; border: 1px solid #fff; margin: -17px 0 0 -17px;
+  transition: opacity .3s ease, width .35s var(--m-ease), height .35s var(--m-ease),
+              margin .35s var(--m-ease), background-color .35s var(--m-ease);
+}
+.m-cursor-dot { width: 5px; height: 5px; background: #fff; margin: -2.5px 0 0 -2.5px; }
+.m-cursor.is-visible, .m-cursor-dot.is-visible { opacity: 1; }
+.m-cursor.is-hover {
+  width: 62px; height: 62px; margin: -31px 0 0 -31px; background: #fff;
+}
+.m-cursor-dot.is-hover { opacity: 0; }
+html.motion-cursor a, html.motion-cursor button,
+html.motion-cursor [data-zoom], html.motion-cursor [data-cursor] { cursor: none; }
+
+/* 磁吸按钮：位移由 JS 写入 --mx / --my */
+.magnetic { will-change: transform; transition: transform .45s var(--m-ease); }
+.magnetic.is-magnet { transition: transform .18s var(--m-ease); }
+.magnetic { transform: translate3d(var(--mx, 0px), var(--my, 0px), 0); }
+
+/* =========================================================== 3. 作品墙 */
+html.motion-ready .work-grid { perspective: 1400px; }
+html.motion-ready .work-card {
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d; will-change: transform;
+  transition: transform .55s var(--m-ease);
+}
+html.motion-ready .work-card.is-tilting { transition: transform .1s linear; }
+html.motion-ready .work-card__media img {
+  transform: translate3d(0, var(--py, 0px), 0) scale(1.08);
+  will-change: transform; transition: transform .25s linear;
+}
+html.motion-ready .work-card__num {
+  display: inline-block; opacity: 0; transform: translateY(12px);
+  transition: opacity .7s var(--m-ease), transform .7s var(--m-ease);
+}
+html.motion-ready .work-card.is-in .work-card__num { opacity: 1; transform: none; }
+html.motion-ready .work-card__bar i { transition: width .6s var(--m-ease); }
+html.motion-ready .work-card:hover .work-card__num { color: var(--accent); }
+
+/* =========================================================== 4. 项目详情 */
+html.motion-ready .project-hero__media img {
+  transform: translate3d(0, var(--hero-py, 0px), 0) scale(1.04);
+  will-change: transform; transition: transform .2s linear;
+}
+html.motion-ready .project-hero__head h1 {
+  animation: m-title-in 1s var(--m-ease) both;
+}
+@keyframes m-title-in { from { opacity: 0; transform: translateY(.22em); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(-20% -3% -20% -3%); } }
+
+/* 滚动叙事：左侧细线 + 当前块序号，只在详情页出现 */
+.m-narrative {
+  position: fixed; left: clamp(14px, 2.2vw, 36px); top: 50%; transform: translateY(-50%);
+  z-index: 40; display: flex; flex-direction: column; align-items: center; gap: 12px;
+  pointer-events: none; opacity: 0; transition: opacity .6s ease;
+}
+.m-narrative.is-visible { opacity: 1; }
+.m-narrative__track { width: 1px; height: 150px; background: var(--line); position: relative; }
+.m-narrative__fill { position: absolute; top: 0; left: 0; width: 1px; height: 0; background: var(--accent, var(--ink)); transition: height .2s linear; }
+.m-narrative__count { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; color: var(--muted); writing-mode: vertical-rl; }
+.m-narrative__label { font-family: var(--font-mono); font-size: 8px; letter-spacing: .16em; color: var(--muted); writing-mode: vertical-rl; text-transform: uppercase; }
+
+/* 叙事块：说明文字轻微上滑，不干扰阅读 */
+html.motion-ready .pblock .figure__cap,
+html.motion-ready .pblock .eyebrow,
+html.motion-ready .pblock-text h2 {
+  transition: opacity .8s var(--m-ease), transform .8s var(--m-ease);
+}
+html.motion-ready .pblock:not(.is-narrating) .figure__cap,
+html.motion-ready .pblock:not(.is-narrating) .eyebrow,
+html.motion-ready .pblock-text:not(.is-narrating) h2 { opacity: 0; transform: translateY(14px); }
+html.motion-ready .pblock.is-narrating .figure__cap,
+html.motion-ready .pblock.is-narrating .eyebrow,
+html.motion-ready .pblock-text.is-narrating h2 { opacity: 1; transform: none; }
+
+/* 灯箱：全屏暗场、克制入场 */
+html.motion-ready .lightbox { background: #0A0A09; }
+html.motion-ready .lightbox__img { animation: m-lightbox-in .5s var(--m-ease) both; }
+@keyframes m-lightbox-in { from { opacity: 0; transform: scale(.975); } to { opacity: 1; transform: none; } }
+html.motion-ready .lightbox__bar { letter-spacing: .16em; }
+html.motion-ready .lightbox__close { transition: transform .35s var(--m-ease), background .3s ease; }
+html.motion-ready .lightbox__close:hover { transform: rotate(90deg); background: rgba(255,255,255,.12); }
+
+/* =========================================================== 5. 页面转场 */
+.m-transition {
+  position: fixed; inset: 0; z-index: 600; background: var(--accent, #141412);
+  transform: translate3d(0, 100%, 0); pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .46s var(--m-ease);
+}
+.m-transition.is-covering { transform: translate3d(0, 0, 0); pointer-events: auto; }
+.m-transition.is-leaving { transform: translate3d(0, -100%, 0); }
+.m-transition__label {
+  color: #fff; font-family: var(--font-mono); font-size: 10px; letter-spacing: .3em;
+  text-transform: uppercase; opacity: 0; transform: translateY(14px);
+  transition: opacity .4s var(--m-ease), transform .4s var(--m-ease);
+}
+.m-transition.is-covering .m-transition__label { opacity: .85; transform: none; transition-delay: .18s; }
+.m-transition.is-leaving .m-transition__label { opacity: 0; transform: translateY(-14px); }
+
+/* =========================================================== 6. 滚动效果 */
+html.motion-ready .progress { background: var(--ink); transition: width .08s linear; }
+.m-scroll-readout {
+  position: fixed; right: clamp(16px, 2.5vw, 40px); bottom: 28px; z-index: 40;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: .18em; color: var(--muted);
+  pointer-events: none; opacity: 0; transition: opacity .5s ease; text-transform: uppercase;
+}
+.m-scroll-readout.is-visible { opacity: 1; }
+.m-scroll-readout b { color: var(--ink); font-weight: 600; }
+
+/* 章节标题文字滑动 */
+html.motion-ready .section-head[data-reveal] h2,
+html.motion-ready .page-head h1 { transition: transform 1s var(--m-ease); }
+html.motion-ready .section-head[data-reveal]:not(.is-in) h2 { transform: translateY(24px); }
+html.motion-ready .section-head[data-reveal].is-in h2 { transform: none; }
+html.motion-ready .divider-band img { will-change: transform; transform: translate3d(0, var(--band-py, 0px), 0) scale(1.06); }
+
+/* =========================================================== 7. 移动端触控 */
+@media (hover: none), (pointer: coarse) {
+  html.motion-ready .m-cursor, html.motion-ready .m-cursor-dot,
+  .m-cursor, .m-cursor-dot { display: none !important; }
+  html.motion-cursor a, html.motion-cursor button,
+  html.motion-cursor [data-zoom], html.motion-cursor [data-cursor] { cursor: auto; }
+  html.motion-ready .work-card,
+  html.motion-ready .work-card__media img,
+  html.motion-ready .project-hero__media img,
+  html.motion-ready .divider-band img { transform: none !important; }
+  html.motion-ready .magnetic { transform: none !important; }
+  html.motion-ready .work-card__num { opacity: 1 !important; transform: none !important; }
+  html.motion-ready .pblock .figure__cap,
+  html.motion-ready .pblock .eyebrow,
+  html.motion-ready .pblock-text h2 { opacity: 1 !important; transform: none !important; }
+  html.motion-ready .m-narrative, html.motion-ready .m-scroll-readout { display: none !important; }
+  .m-transition { transition-duration: .28s; }
+  html:not(.motion-off) .hero__display h1 span { animation-duration: .62s; }
+  /* 触控按下反馈：轻微缩放 + 底色变化，替代鼠标悬停 */
+  .work-card, .feat-row, .collage__item, .btn-outline {
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .22s var(--m-ease), opacity .22s ease;
+  }
+  .work-card:active { transform: scale(.985); opacity: .88; }
+  .feat-row:active { transform: translateX(6px); }
+  .collage__item:active { transform: scale(.985); }
+  .btn-outline:active { transform: scale(.97); }
+  /* 灯箱在移动端留出更大的点击区域 */
+  html.motion-ready .lightbox__nav { padding: 26px 12px; opacity: .5; }
+  html.motion-ready .lightbox__img { max-height: 76vh; }
+}
+
+/* =========================================================== 关闭动效 */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  html:not(.motion-off) .hero__display h1 span,
+  html:not(.motion-off) .hero__meta span,
+  html:not(.motion-off) .hero__lede,
+  html:not(.motion-off) .hero__cats,
+  html.motion-ready .project-hero__head h1,
+  html.motion-ready .lightbox__img { animation: none !important; }
+}
+html.motion-off { scroll-behavior: auto !important; }
+html.motion-off *,
+html.motion-off *::before,
+html.motion-off *::after { animation: none !important; transition-duration: .01ms !important; }
+html.motion-off [data-reveal] { opacity: 1 !important; transform: none !important; }
+html.motion-off .m-cursor, html.motion-off .m-cursor-dot,
+html.motion-off .m-transition, html.motion-off .m-narrative,
+html.motion-off .m-scroll-readout { display: none !important; }
+html.motion-off .hero__display h1 span { opacity: 1 !important; transform: none !important; clip-path: none !important; }
+html.motion-off .work-card, html.motion-off .work-card__media img,
+html.motion-off .project-hero__media img, html.motion-off .divider-band img { transform: none !important; }
+html.motion-off .work-card__num, html.motion-off .pblock .figure__cap,
+html.motion-off .pblock .eyebrow, html.motion-off .pblock-text h2 { opacity: 1 !important; transform: none !important; }

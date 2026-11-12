@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="assets/site/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#F6F3EC">
+<meta name="author" content="曾文卓 ZENG WENZHUO">
+<title>关于作品集 — 曾文卓</title>
+<meta name="description" content="关于《曾文卓作品集2.pdf》网页版的素材来源、项目目录与维护说明。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="曾文卓 · 视觉传达设计作品集">
+<meta property="og:title" content="关于作品集 — 曾文卓">
+<meta property="og:description" content="关于《曾文卓作品集2.pdf》网页版的素材来源、项目目录与维护说明。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/motion.css">
+</head>
+<body data-base="." data-page="about">
+
+<div class="progress" id="progress"></div>
+<header class="header" id="site-header"></header>
+
+<section class="wrap page-head">
+  <div class="eyebrow" data-reveal data-en="ABOUT THIS SITE">ABOUT THIS SITE / 关于本站</div>
+  <h1 data-reveal>ABOUT<br>&amp; SOURCE</h1>
+  <div class="sub" data-reveal>
+    <p id="about-page-lead">本站是 39 页横版 PDF 作品集的响应式网页重构版。所有作品图片均从 PDF 内嵌图像直接提取，保留原始比例与像素，没有裁切、重绘或 AI 生成内容。</p>
+    <span class="count" data-en="SOURCE · ZENG WENZHUO PORTFOLIO 2.pdf">SOURCE · 曾文卓作品集2.pdf</span>
+  </div>
+</section>
+
+<section class="wrap" style="padding-bottom:clamp(60px,8vw,120px)">
+  <div class="about-grid">
+    <div data-reveal>
+      <div class="eyebrow" style="margin-bottom:22px" data-en="01 / CONTENT SOURCE">01 / 内容来源</div>
+      <h2 data-en="Only real work,<br>nothing staged.">只呈现真实<br>设计成果。</h2>
+      <p data-en="The original portfolio runs to 39 pages, including five section pages, a cover and a back cover. This site reorganises the content by project — covers, project pages, high-resolution images, category navigation and visual transitions — instead of embedding all 39 pages one by one.">作品集原稿共 39 页，含 5 个章节页、封面与封底。网页按项目重新组织内容：项目封面、详情页、高清图展示、分类导航与章节间的视觉过渡，而不是把 39 页逐页嵌进页面。</p>
+      <p style="margin-top:18px" data-en="The section pages (BRAND VI / UI UX / IP / LOGO / FONT) become full-width transitions; individual images from the 2×2 layout pages are also extracted on their own, so they can reflow naturally on narrow screens.">章节页（BRAND VI / UI UX / IP / LOGO / FONT）被用作全幅过渡带；2×2 排版页中的单张作品图也单独抽出，让它们在窄屏上可以自然重排。</p>
+    </div>
+    <div data-reveal data-delay="1">
+      <div class="eyebrow" style="margin-bottom:22px" data-en="02 / ASSETS &amp; MAINTENANCE">02 / 素材与维护</div>
+      <div class="contact-list">
+        <div data-en="&lt;span&gt;ORIGINAL&lt;/span&gt;&lt;b&gt;assets/&amp;lt;project&amp;gt;/ · images embedded in the PDF&lt;/b&gt;"><span>原图</span><b>assets/&lt;项目&gt;/ · PDF 内嵌原始图片</b></div>
+        <div data-en="&lt;span&gt;HD&lt;/span&gt;&lt;b&gt;assets/hd/page-XXXX.jpg · 200dpi page renders&lt;/b&gt;"><span>高清</span><b>assets/hd/page-XXXX.jpg · 200dpi 原页放大</b></div>
+        <div data-en="&lt;span&gt;TRANSITIONS&lt;/span&gt;&lt;b&gt;assets/site/ · section pages, cover and closing&lt;/b&gt;"><span>过渡</span><b>assets/site/ · 章节页与封面封底</b></div>
+        <div data-en="&lt;span&gt;DATA&lt;/span&gt;&lt;b&gt;data/works.js · the single content source&lt;/b&gt;"><span>数据</span><b>data/works.js · 唯一内容数据源</b></div>
+        <div data-en="&lt;span&gt;NAMING&lt;/span&gt;&lt;b&gt;NN-semantic-name.jpg; overwrite in place to replace&lt;/b&gt;"><span>命名</span><b>两位序号-语义名.jpg，同名覆盖即可替换</b></div>
+      </div>
+      <p style="margin-top:24px;font-size:13px;color:var(--muted)" data-en="To add a project: append an entry to the projects array in &lt;code&gt;data/works.js&lt;/code&gt;, then copy a page shell in &lt;code&gt;projects/&lt;/code&gt; and change its data-project.">新增项目：在 <code>data/works.js</code> 的 projects 数组追加一项，并在 <code>projects/</code> 下复制一份页面外壳（修改 data-project 即可）。</p>
+    </div>
+  </div>
+</section>
+
+<section class="divider-band" data-reveal>
+  <img id="divider3-img" src="assets/site/section-font.jpg" alt="FONT DESIGN 章节页" loading="lazy">
+  <div class="divider-band__text">
+    <h3 data-en="Damei Hanzi">大美汉字</h3>
+    <p data-en="08 — 09 / 09 &nbsp;·&nbsp; FONT DESIGN &nbsp;·&nbsp; Original type · Experimental type posters">08 — 09 / 09 &nbsp;·&nbsp; FONT DESIGN &nbsp;·&nbsp; 原创字体 · 中文实验字体海报</p>
+  </div>
+</section>
+
+<section class="wrap" style="padding-block:clamp(70px,9vw,140px)">
+  <div class="about-grid">
+    <div data-reveal>
+      <div class="eyebrow" style="margin-bottom:22px" data-en="03 / DESIGN LANGUAGE">03 / 设计语言</div>
+      <h2 data-en="Warm white, deep black<br>and neutral grey.">暖白、深黑<br>与中性灰。</h2>
+      <p data-en="The site is built on warm white #F6F3EC, deep black #141412 and neutral grey, with editorial scale, hairline rules and generous white space. Each project keeps its own brand colour — the green of Haiyu Low-Altitude, the government blue of Bin Xiaoxun, PETORA’s deep space blue, the fluorescent green of the type chapter — used on cover tags, transitions and the next-project link.">整站以暖白 #F6F3EC、深黑 #141412 与中性灰为基础，采用编辑式的大字号、细分隔线与留白。各项目保留自己的品牌色：海屿低空的品牌绿、滨小讯的政务蓝、PETORA 的深空蓝、字体章节的荧光绿，用于封面标签、过渡带与下一项目导览。</p>
+    </div>
+    <div data-reveal data-delay="1">
+      <div class="eyebrow" style="margin-bottom:22px" data-en="04 / CONTACT">04 / 联系</div>
+      <div class="contact-list">
+        <div><span>NAME</span><b id="contact-name">曾文卓 / ZENG WENZHUO</b></div>
+        <div><span>PERIOD</span><b id="contact-period">2023 — 2026</b></div>
+        <div><span>TEL</span><a id="contact-tel" href="tel:19870683884">19870683884</a></div>
+        <div><span>EMAIL</span><a id="contact-email" href="mailto:3288084831@qq.com">3288084831@qq.com</a></div>
+        <div><span>WECHAT</span><b id="contact-wechat">z3288084831y</b></div>
+      </div>
+      <div style="margin-top:30px"><a class="btn-outline" href="works.html" data-en="Browse all works ↗">浏览全部作品 ↗</a></div>
+    </div>
+  </div>
+</section>
+
+<div class="closing" data-reveal><img id="closing-img" src="assets/site/closing.jpg" alt="THANK YOU 封底" loading="lazy"></div>
+<footer class="footer" id="site-footer"></footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-label="高清作品图" data-en-label="High-resolution artwork">
+  <button class="lightbox__close" data-lightbox-close aria-label="关闭" data-en-label="Close">×</button>
+  <button class="lightbox__nav prev" data-lightbox-prev aria-label="上一张" data-en-label="Previous">‹</button>
+  <img class="lightbox__img" alt="" decoding="async">
+  <button class="lightbox__nav next" data-lightbox-next aria-label="下一张" data-en-label="Next">›</button>
+  <div class="lightbox__bar"><span class="lightbox__caption"></span><span class="lightbox__counter"></span></div>
+</div>
+
+<script src="data/i18n.js"></script>
+<script src="data/works.js"></script>
+<script src="data/published.js"></script>
+<script src="js/portfolio-store.js"></script>
+<script src="js/site.js"></script>
+<script src="js/motion.js"></script>
+</body>
+</html>

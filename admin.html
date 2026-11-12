@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="assets/site/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#F6F3EC">
+<meta name="author" content="曾文卓 ZENG WENZHUO">
+<title>可视化管理后台 — 曾文卓作品集</title>
+<meta name="description" content="纯静态作品集的可视化编辑后台：作品管理、文字编辑、视觉设置、实时预览与完整导出。">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<div class="admin">
+  <!-- ============================ 侧栏 ============================ -->
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <b>作品集管理后台</b>
+      <span>VISUAL PORTFOLIO / ADMIN</span>
+    </div>
+    <nav class="sidebar__nav" id="side-nav">
+      <button data-view="projects" class="is-active"><i>01</i>作品管理</button>
+      <button data-view="text"><i>02</i>文字编辑</button>
+      <button data-view="visual"><i>03</i>视觉设置</button>
+      <button data-view="preview"><i>04</i>实时预览</button>
+      <button data-view="data"><i>05</i>数据安全</button>
+      <button data-view="help"><i>06</i>使用说明</button>
+    </nav>
+    <div class="sidebar__spacer"></div>
+    <div class="sidebar__status" id="side-status">
+      <div><span class="dot" id="status-dot"></span><b id="status-text">正在载入…</b></div>
+      <div id="status-detail">存储：IndexedDB</div>
+      <div style="margin-top:10px"><a href="index.html" style="text-decoration:underline">← 返回网站前台</a></div>
+    </div>
+  </aside>
+
+  <!-- ============================ 主区 ============================ -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="view-title">作品管理</h1>
+        <div class="topbar__sub" id="view-sub">PROJECTS / 增删改 · 排序 · 图片</div>
+      </div>
+      <div class="topbar__actions">
+        <button class="btn" id="btn-undo" title="撤销 (Ctrl/⌘+Z)">↶ 撤销</button>
+        <button class="btn" id="btn-redo" title="重做 (Ctrl/⌘+Shift+Z)">↷ 重做</button>
+        <button class="btn" id="btn-save">保存草稿</button>
+        <button class="btn btn--accent" id="btn-release">导出发布包 ZIP</button>
+      </div>
+    </div>
+
+    <div class="notice" id="notice">
+      <div>
+        <b>数据保存说明：</b>所有编辑<b>只保存在当前浏览器</b>（本地草稿），前台页面与实时预览会立即读取草稿；
+        但<b>其他设备 / 其他访客看到的仍是原始内容</b>。要让修改真正发布，请点右上角「导出发布包 ZIP」，
+        把解压后的目录上传到静态托管。配置 JSON 可跨设备导入恢复。原始图片文件永远不会被覆盖。
+        <span id="proto-hint"></span>
+      </div>
+      <button class="x" id="notice-close" title="收起">×</button>
+    </div>
+
+    <div class="workspace">
+
+      <!-- ====================== 01 作品管理 ====================== -->
+      <section class="view is-active" id="view-projects">
+        <div class="stat-grid">
+          <div class="stat"><b id="stat-total">0</b><span>项目总数</span></div>
+          <div class="stat"><b id="stat-visible">0</b><span>前台显示</span></div>
+          <div class="stat"><b id="stat-images">0</b><span>图片条目</span></div>
+          <div class="stat"><b id="stat-trash">0</b><span>回收站（可恢复）</span></div>
+        </div>
+        <div class="projects-layout">
+          <div>
+            <div class="card">
+              <div class="card__head">
+                <h2>项目列表</h2>
+                <div class="right">
+                  <button class="btn btn--sm btn--primary" id="btn-add-project">＋ 新增</button>
+                </div>
+              </div>
+              <div class="card__desc">拖动左侧手柄调整展示顺序；序号会自动同步到首页、总览与详情页。</div>
+              <div class="project-list" id="project-list"></div>
+              <div class="divider"></div>
+              <button class="btn btn--sm" id="btn-trash-toggle">回收站 / 恢复原始项目</button>
+              <div id="trash-box" style="display:none;margin-top:12px"></div>
+            </div>
+          </div>
+
+          <div id="project-editor">
+            <div class="empty">从左侧选择一个项目开始编辑</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================== 02 文字编辑 ====================== -->
+      <section class="view" id="view-text"></section>
+
+      <!-- ====================== 03 视觉设置 ====================== -->
+      <section class="view" id="view-visual"></section>
+
+      <!-- ====================== 04 实时预览 ====================== -->
+      <section class="view" id="view-preview">
+        <div class="card">
+          <div class="card__head"><h2>实时预览</h2><span class="hint">读取当前浏览器草稿，修改后自动刷新</span></div>
+          <div class="preview-bar">
+            <select class="select" id="preview-page" style="max-width:260px"></select>
+            <div class="chips">
+              <button class="chip is-active" data-device="desktop">桌面 1440</button>
+              <button class="chip" data-device="mobile">手机 390</button>
+            </div>
+            <button class="btn btn--sm" id="btn-preview-refresh">↻ 刷新预览</button>
+            <button class="btn btn--sm" id="btn-preview-open">在新窗口打开 ↗</button>
+          </div>
+          <div class="card__desc">预览的是真实前台页面（不是模拟截图）。手机模式为 390px 宽视口。</div>
+        </div>
+        <div class="preview-stage">
+          <iframe class="preview-frame" id="preview-frame" src="index.html" title="网站实时预览"></iframe>
+        </div>
+      </section>
+
+      <!-- ====================== 05 数据安全 ====================== -->
+      <section class="view" id="view-data"></section>
+
+      <!-- ====================== 06 使用说明 ====================== -->
+      <section class="view" id="view-help">
+        <div class="card"><div class="help-block" id="help-content"></div></div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<input type="file" id="hidden-file" accept="image/*" style="display:none">
+<input type="file" id="hidden-json" accept="application/json,.json" style="display:none">
+
+<script src="data/i18n.js"></script>
+<script src="data/works.js"></script>
+<script src="data/published.js"></script>
+<script src="js/portfolio-store.js"></script>
+<script src="js/zip-writer.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

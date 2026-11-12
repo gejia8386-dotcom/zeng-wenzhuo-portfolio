@@ -1,0 +1,321 @@
+{
+  "_note": "《曾文卓作品集2.pdf》39 页逐页归属表。asset 为相对 assets/ 的原始提取图路径；hd 为 assets/hd/ 下 200dpi 原页放大图。此表用于素材替换与内容核对。",
+  "source": "曾文卓作品集2.pdf",
+  "pages": 39,
+  "map": [
+    {
+      "page": 1,
+      "section": "封面",
+      "project": null,
+      "asset": "site/cover-title.png",
+      "hd": "page-0001.jpg"
+    },
+    {
+      "page": 2,
+      "section": "BRAND VI DESIGN",
+      "project": null,
+      "asset": "site/section-brand-vi.jpg",
+      "hd": "page-0002.jpg"
+    },
+    {
+      "page": 3,
+      "section": "海屿低空 · 项目封面",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/01-cover.jpg",
+      "hd": "page-0003.jpg"
+    },
+    {
+      "page": 4,
+      "section": "品牌介绍",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/02-brand-story.jpg",
+      "hd": "page-0004.jpg"
+    },
+    {
+      "page": 5,
+      "section": "标志标准化制图",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/03-logo-construction.jpg",
+      "hd": "page-0005.jpg"
+    },
+    {
+      "page": 6,
+      "section": "名片",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/04-business-card.jpg",
+      "hd": "page-0006.jpg"
+    },
+    {
+      "page": 7,
+      "section": "工作证与挂绳",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/05-id-badge.jpg",
+      "hd": "page-0007.jpg"
+    },
+    {
+      "page": 8,
+      "section": "胶带与贴纸",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/06-washi-tape.jpg",
+      "hd": "page-0008.jpg"
+    },
+    {
+      "page": 9,
+      "section": "视觉识别系统手册",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/07-vi-manual.jpg",
+      "hd": "page-0009.jpg"
+    },
+    {
+      "page": 10,
+      "section": "辅助图形",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/08-auxiliary-graphics.jpg",
+      "hd": "page-0010.jpg"
+    },
+    {
+      "page": 11,
+      "section": "周边应用 · 穿戴类",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/spreads/01-merch-wearables.jpg",
+      "tiles": [
+        "haiyu-low-altitude/applications/01-phone-cases.jpg",
+        "haiyu-low-altitude/applications/02-vests.jpg",
+        "haiyu-low-altitude/applications/03-bucket-hats.jpg",
+        "haiyu-low-altitude/applications/04-baseball-caps.jpg"
+      ],
+      "hd": "page-0011.jpg"
+    },
+    {
+      "page": 12,
+      "section": "周边应用 · 装备类",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/spreads/02-merch-gear.jpg",
+      "tiles": [
+        "haiyu-low-altitude/applications/05-multitool.jpg",
+        "haiyu-low-altitude/applications/06-mug.jpg",
+        "haiyu-low-altitude/applications/07-cooler.jpg",
+        "haiyu-low-altitude/applications/08-knife.jpg"
+      ],
+      "hd": "page-0012.jpg"
+    },
+    {
+      "page": 13,
+      "section": "产品与设备设计",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/spreads/03-devices.jpg",
+      "tiles": [
+        "haiyu-low-altitude/applications/09-ground-station.jpg",
+        "haiyu-low-altitude/applications/10-cargo-drone.jpg",
+        "haiyu-low-altitude/applications/11-satellite-dish.jpg",
+        "haiyu-low-altitude/applications/12-hot-air-balloon.jpg"
+      ],
+      "hd": "page-0013.jpg"
+    },
+    {
+      "page": 14,
+      "section": "手提袋系列",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/spreads/04-tote-bags.jpg",
+      "tiles": [
+        "haiyu-low-altitude/applications/13-tote-kraft.jpg",
+        "haiyu-low-altitude/applications/14-tote-black.jpg",
+        "haiyu-low-altitude/applications/15-tote-canvas.jpg",
+        "haiyu-low-altitude/applications/16-tote-green.jpg"
+      ],
+      "hd": "page-0014.jpg"
+    },
+    {
+      "page": 15,
+      "section": "视觉识别系统手册（与 P09 内容完全重复，网站已去重）",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/07-vi-manual.jpg",
+      "hd": "page-0015.jpg",
+      "duplicate_of": 9
+    },
+    {
+      "page": 16,
+      "section": "主视觉海报 CAMPING LOW SKY",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/09-key-visual.jpg",
+      "hd": "page-0016.jpg"
+    },
+    {
+      "page": 17,
+      "section": "系列海报 01",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/spreads/05-poster-series-01.jpg",
+      "tiles": [
+        "haiyu-low-altitude/10-poster-flight.jpg",
+        "haiyu-low-altitude/11-poster-sunset.jpg"
+      ],
+      "hd": "page-0017.jpg"
+    },
+    {
+      "page": 18,
+      "section": "系列海报 02",
+      "project": "haiyu-low-altitude",
+      "asset": "haiyu-low-altitude/spreads/06-poster-series-02.jpg",
+      "tiles": [
+        "haiyu-low-altitude/12-poster-forest.jpg",
+        "haiyu-low-altitude/13-poster-coast.jpg"
+      ],
+      "hd": "page-0018.jpg"
+    },
+    {
+      "page": 19,
+      "section": "UI / UX DESIGN",
+      "project": null,
+      "asset": "site/section-ui-ux.jpg",
+      "hd": "page-0019.jpg"
+    },
+    {
+      "page": 20,
+      "section": "PETORA · 主视觉",
+      "project": "petora",
+      "asset": "petora/01-hero.jpg",
+      "hd": "page-0020.jpg"
+    },
+    {
+      "page": 21,
+      "section": "PETORA · 项目概述",
+      "project": "petora",
+      "asset": "petora/02-overview.jpg",
+      "hd": "page-0021.jpg"
+    },
+    {
+      "page": 22,
+      "section": "诊伴 · 主视觉",
+      "project": "zhenban",
+      "asset": "zhenban/01-hero.jpg",
+      "hd": "page-0022.jpg"
+    },
+    {
+      "page": 23,
+      "section": "诊伴 · 设计流程",
+      "project": "zhenban",
+      "asset": "zhenban/02-process.jpg",
+      "hd": "page-0023.jpg"
+    },
+    {
+      "page": 24,
+      "section": "IP DESIGN",
+      "project": null,
+      "asset": "site/section-ip.jpg",
+      "hd": "page-0024.jpg"
+    },
+    {
+      "page": 25,
+      "section": "South Pearl · 封面",
+      "project": "south-pearl",
+      "asset": "south-pearl/01-cover.jpg",
+      "hd": "page-0025.jpg"
+    },
+    {
+      "page": 26,
+      "section": "South Pearl · 标志",
+      "project": "south-pearl",
+      "asset": "south-pearl/02-logo.png",
+      "hd": "page-0026.jpg"
+    },
+    {
+      "page": 27,
+      "section": "South Pearl · 系统",
+      "project": "south-pearl",
+      "asset": "south-pearl/03-system.jpg",
+      "hd": "page-0027.jpg"
+    },
+    {
+      "page": 28,
+      "section": "滨小讯 · 封面",
+      "project": "binxiaoxun",
+      "asset": "binxiaoxun/01-cover.jpg",
+      "hd": "page-0028.jpg"
+    },
+    {
+      "page": 29,
+      "section": "滨小讯 · 系统",
+      "project": "binxiaoxun",
+      "asset": "binxiaoxun/02-system.png",
+      "hd": "page-0029.jpg"
+    },
+    {
+      "page": 30,
+      "section": "LOGO DESIGN",
+      "project": null,
+      "asset": "site/section-logo.jpg",
+      "hd": "page-0030.jpg"
+    },
+    {
+      "page": 31,
+      "section": "Duolingo 标志再设计",
+      "project": "logo",
+      "asset": "logo/01-duolingo.jpg",
+      "hd": "page-0031.jpg"
+    },
+    {
+      "page": 32,
+      "section": "CHICKEN WAVE",
+      "project": "logo",
+      "asset": "logo/02-chicken-wave.jpg",
+      "hd": "page-0032.jpg"
+    },
+    {
+      "page": 33,
+      "section": "中玻建交 40 周年标志",
+      "project": "china-bolivia-40",
+      "asset": "china-bolivia-40/01-logo.jpg",
+      "hd": "page-0033.jpg"
+    },
+    {
+      "page": 34,
+      "section": "花海—赤西",
+      "project": "logo",
+      "asset": "logo/03-huahai-chixi.jpg",
+      "hd": "page-0034.jpg"
+    },
+    {
+      "page": 35,
+      "section": "FONT DESIGN",
+      "project": null,
+      "asset": "site/section-font.jpg",
+      "hd": "page-0035.jpg"
+    },
+    {
+      "page": 36,
+      "section": "大美汉字 · 双联海报",
+      "project": "type-poster",
+      "asset": "type-poster/01-damei-hanzi.png",
+      "hd": "page-0036.jpg"
+    },
+    {
+      "page": 37,
+      "section": "立体字形与字标合集",
+      "project": "font-design",
+      "asset": "font-design/01-typeface-set.png",
+      "hd": "page-0037.jpg"
+    },
+    {
+      "page": 38,
+      "section": "未来设计 / 青年力量",
+      "project": "font-design",
+      "asset": "font-design/02-future-cyber.jpg",
+      "hd": "page-0038.jpg"
+    },
+    {
+      "page": 39,
+      "section": "封底 THANK YOU",
+      "project": null,
+      "asset": "site/closing.jpg",
+      "hd": "page-0039.jpg"
+    }
+  ],
+  "notes": [
+    "PDF 为图片型横版作品集（约 A4 横向，页面比例 ≈ 1.414），无可用文字层，项目归属按逐页画面核对。",
+    "P15 与 P09 为同一张「视觉识别系统手册」页，网页已去重。",
+    "P19 章节页副标题印作「IP形象设计」，但主标题为 UI/UX DESIGN，且后续内容为 PETORA 与诊伴两个 UI 项目，故归入界面设计章节。",
+    "P33 中玻建交 40 周年标志在原 PDF 中位于 LOGO DESIGN 章节内，按需求单列为独立项目。",
+    "P11–P14、P17–P18 为 2×2 / 双联排版页，其单张作品图在 PDF 内本就是独立图像对象，已单独抽出为 applications/ 与 10–13 系列海报文件。",
+    "assets/ 下所有 .jpg/.png 均为 PDF 内嵌图像的原始字节（未重编码、未裁切）；assets/hd/ 为 200dpi 原页渲染，仅用于灯箱放大。"
+  ]
+}
