@@ -2,8 +2,8 @@
   "mode": "test",
   "target_branch": "cloud-test",
   "output_root": ".cloud-test-output",
-  "github_run_id": "43583073971",
-  "started_at": "2026-11-14T09:59:19.222Z",
+  "github_run_id": "43583234744",
+  "started_at": "2026-11-14T10:01:10.902Z",
   "checks": {
     "read_version_snapshot": true,
     "read_site_config": true,
@@ -19,12 +19,14 @@
   "files": [
     "assets/uploads/img-mwg2zhbd-iobd.png",
     "assets/uploads/img-mwg2zhc7-7vjs.png",
+    "assets/uploads/img-mwg8jd0t-1tew.png",
+    "assets/uploads/img-mwg8jd1g-9osv.png",
     "data/published.js"
   ],
-  "version_id": "40d4db52-9a11-43bd-944f-b02f4d791248",
-  "version_revision": 9,
+  "version_id": "045e0972-25f2-4cff-a807-bb863b9a3214",
+  "version_revision": 14,
   "version_status_before": "building",
-  "media_rows": 2,
+  "media_rows": 4,
   "downloaded_images": [
     {
       "path": "assets/uploads/img-mwg2zhbd-iobd.png",
@@ -32,6 +34,14 @@
     },
     {
       "path": "assets/uploads/img-mwg2zhc7-7vjs.png",
+      "bytes": 1599
+    },
+    {
+      "path": "assets/uploads/img-mwg8jd0t-1tew.png",
+      "bytes": 1599
+    },
+    {
+      "path": "assets/uploads/img-mwg8jd1g-9osv.png",
       "bytes": 1599
     }
   ],
@@ -46,5 +56,5 @@
   "created_detail_pages": [],
   "skipped_existing_pages": 0,
   "bad_refs": [],
-  "finished_at": "2026-11-14T09:59:24.694Z"
+  "finished_at": "2026-11-14T10:01:20.764Z"
 }
