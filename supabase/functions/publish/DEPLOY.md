@@ -55,3 +55,31 @@ curl -s -X POST "https://ypvpaqkjnxgcnnupfrmy.supabase.co/functions/v1/publish" 
 - 默认 `mode=test`；`production` 需显式指定，且拒绝空草稿。
 - 15 分钟内存在 `pending/building` 版本时拒绝重复发布（409）。
 - 任何失败都会把 `site_versions` 标记为 `failed` 并记录错误。
+
+## 实际部署记录（2026-11-14）
+
+部署方式：Dashboard 在线编辑器（方式 A）。与本文档前文的两处偏差及原因：
+
+1. **Verify JWT 保持开启**（未关闭）。理由：开启后网关对无凭证/无效 JWT
+   请求直接返回 401（`UNAUTHORIZED_NO_AUTH_HEADER` /
+   `UNAUTHORIZED_INVALID_JWT_FORMAT`），安全等价；携带合法用户 JWT 的请求
+   会正常进入函数，函数内部的 GoTrue 验签 + 白名单校验不受影响。
+   Edge 自动翻译会让 Dashboard 崩溃（insertBefore 错误），避免不必要的
+   控制台配置操作。
+
+2. **db() 的 apikey 头改用 service_role 新密钥**（commit 45fbf9a）。
+   实测：Edge Runtime 注入的 `SUPABASE_ANON_KEY` 是旧式 JWT，而
+   `SUPABASE_SECRET_KEY` 是新式 `sb_secret_`，两套体系混用会被 PostgREST
+   以 `PGRST301`（Expected 3 parts in JWT; got 1）拒绝。apikey 与
+   Authorization 必须同体系，统一用 `sb_secret_`。
+
+### 端到端验证结果（全部通过）
+
+- 无凭证 POST → 401（网关）
+- 无效 JWT POST → 401（网关）
+- OPTIONS 预检 → 204，CORS 头与函数内 corsHeaders 逐字一致
+- 测试管理员（临时创建、验证后删除）JWT 调用 mode=test → 200，
+  返回 version_id / revision / trigger=workflow_dispatch(cloud-test)
+- GitHub Actions run 43560301673 → success
+- site_versions 状态回写 success（finished_at 正确）
+- cloud-test 分支产物提交 d12d3bf `publish: rlatest test (8fbd9f38…)`
