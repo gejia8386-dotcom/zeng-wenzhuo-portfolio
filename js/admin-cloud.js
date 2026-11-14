@@ -1067,6 +1067,7 @@
         draftEmpty: !!(cloud && cloud.draft && !Array.isArray(cloud.draft.projects)),
         lastSync: state.lastSync ? clone(state.lastSync) : null,
         syncing: state.syncing,
+        publishing: state.publishing ? clone(state.publishing) : null,
         mediaQueue: Object.keys(state.mediaQueue),
         mediaErrors: state.mediaErrors,
         versions: state.versions.length
