@@ -2,8 +2,8 @@
   "mode": "test",
   "target_branch": "cloud-test",
   "output_root": ".cloud-test-output",
-  "github_run_id": "43572444358",
-  "started_at": "2026-11-14T07:43:55.164Z",
+  "github_run_id": "43583073971",
+  "started_at": "2026-11-14T09:59:19.222Z",
   "checks": {
     "read_version_snapshot": true,
     "read_site_config": true,
@@ -21,7 +21,7 @@
     "assets/uploads/img-mwg2zhc7-7vjs.png",
     "data/published.js"
   ],
-  "version_id": "a4cbb398-16ed-4a28-a857-17cddad1eda1",
+  "version_id": "40d4db52-9a11-43bd-944f-b02f4d791248",
   "version_revision": 9,
   "version_status_before": "building",
   "media_rows": 2,
@@ -46,5 +46,5 @@
   "created_detail_pages": [],
   "skipped_existing_pages": 0,
   "bad_refs": [],
-  "finished_at": "2026-11-14T07:43:59.833Z"
+  "finished_at": "2026-11-14T09:59:24.694Z"
 }
