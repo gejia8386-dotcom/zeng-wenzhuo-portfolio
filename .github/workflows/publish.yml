@@ -1,0 +1,160 @@
+# =============================================================================
+# 作品集云端发布流水线
+# -----------------------------------------------------------------------------
+# 触发方式：
+#   repository_dispatch(event_type=portfolio-publish) → 正式发布（写 main → Pages）
+#   workflow_dispatch(mode=test)                     → 测试（只写 cloud-test 隔离目录）
+#
+# 安全护栏：
+#   - production 只允许由 repository_dispatch 触发，手动触发无法写 main
+#   - test 禁止写 main，产物全部落在 .cloud-test-output/
+#   - 并发锁，避免两次发布互相覆盖
+#   - 任何步骤失败都会把 site_versions 标记为 failed（含 run id）
+#   - 只新增/更新 data/published.js、assets/uploads/、缺失的 projects/*.html
+#     绝不删除任何既有项目、图片或详情页
+# =============================================================================
+name: portfolio-publish
+
+on:
+  repository_dispatch:
+    types: [portfolio-publish]
+  workflow_dispatch:
+    inputs:
+      version_id:
+        description: 'site_versions.id（留空取最新一条）'
+        required: false
+        default: ''
+      mode:
+        description: 'test（默认，安全）或 production'
+        required: true
+        default: 'test'
+        type: choice
+        options:
+          - test
+          - production
+      target_branch:
+        description: '提交目标分支（test 固定 cloud-test）'
+        required: true
+        default: 'cloud-test'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: portfolio-publish
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      EVENT_NAME: ${{ github.event_name }}
+      CP_VERSION: ${{ github.event.client_payload.version_id }}
+      CP_REVISION: ${{ github.event.client_payload.revision }}
+      IN_VERSION: ${{ inputs.version_id }}
+      IN_MODE: ${{ inputs.mode }}
+      IN_BRANCH: ${{ inputs.target_branch }}
+      GITHUB_RUN_ID: ${{ github.run_id }}
+      GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
+
+    steps:
+      - name: 解析触发上下文
+        id: ctx
+        run: |
+          if [ "$EVENT_NAME" = "repository_dispatch" ]; then
+            echo "mode=production" >> "$GITHUB_OUTPUT"
+            echo "branch=main" >> "$GITHUB_OUTPUT"
+            echo "version_id=$CP_VERSION" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=$IN_MODE" >> "$GITHUB_OUTPUT"
+            echo "branch=$IN_BRANCH" >> "$GITHUB_OUTPUT"
+            echo "version_id=$IN_VERSION" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 安全护栏
+        env:
+          MODE: ${{ steps.ctx.outputs.mode }}
+          BRANCH: ${{ steps.ctx.outputs.branch }}
+        run: |
+          echo "event=$EVENT_NAME mode=$MODE branch=$BRANCH"
+          if [ "$MODE" = "production" ] && [ "$EVENT_NAME" != "repository_dispatch" ]; then
+            echo "::error::production 模式只允许由 repository_dispatch 触发，禁止手动发布到 main"
+            exit 1
+          fi
+          if [ "$MODE" = "test" ] && [ "$BRANCH" = "main" ]; then
+            echo "::error::test 模式禁止写入 main 分支"
+            exit 1
+          fi
+          if [ "$MODE" = "test" ] && [ "$BRANCH" != "cloud-test" ]; then
+            echo "::error::test 模式只能写入 cloud-test 分支"
+            exit 1
+          fi
+          echo "护栏通过"
+
+      - name: Checkout 目标分支
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.ctx.outputs.branch }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 构建发布产物
+        env:
+          VERSION_ID: ${{ steps.ctx.outputs.version_id }}
+          MODE: ${{ steps.ctx.outputs.mode }}
+          TARGET_BRANCH: ${{ steps.ctx.outputs.branch }}
+        run: node scripts/publish-build.mjs
+
+      - name: 提交产物（仅明确路径）
+        env:
+          MODE: ${{ steps.ctx.outputs.mode }}
+          BRANCH: ${{ steps.ctx.outputs.branch }}
+          VERSION_ID: ${{ steps.ctx.outputs.version_id }}
+        run: |
+          git config user.name "portfolio-publisher[bot]"
+          git config user.email "portfolio-publisher[bot]@users.noreply.github.com"
+          if [ "$MODE" = "test" ]; then
+            git add .cloud-test-output
+          else
+            git add data/published.js
+            if [ -d assets/uploads ]; then git add assets/uploads; fi
+            git add projects
+          fi
+          if git diff --cached --quiet; then
+            echo "没有需要提交的文件变更"
+          else
+            git commit -m "publish: r${CP_REVISION:-latest} ${MODE} (${VERSION_ID:-auto})"
+            git push origin "HEAD:refs/heads/${BRANCH}"
+          fi
+
+      - name: 上传构建报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish-report-${{ github.run_id }}
+          path: |
+            publish-report.json
+            .cloud-test-output/publish-report.json
+          if-no-files-found: ignore
+
+      - name: 回写发布成功
+        if: success()
+        env:
+          VERSION_ID: ${{ steps.ctx.outputs.version_id }}
+          MODE: ${{ steps.ctx.outputs.mode }}
+        run: node scripts/publish-status.mjs success
+
+      - name: 回写发布失败
+        if: failure()
+        continue-on-error: true
+        env:
+          VERSION_ID: ${{ steps.ctx.outputs.version_id }}
+          MODE: ${{ steps.ctx.outputs.mode }}
+        run: node scripts/publish-status.mjs failed "GitHub Actions 构建或提交失败 (run ${GITHUB_RUN_ID})"
