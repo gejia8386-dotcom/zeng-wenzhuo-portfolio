@@ -2,8 +2,8 @@
   "mode": "test",
   "target_branch": "cloud-test",
   "output_root": ".cloud-test-output",
-  "github_run_id": "43583234744",
-  "started_at": "2026-11-14T10:01:10.902Z",
+  "github_run_id": "43583900776",
+  "started_at": "2026-11-14T10:09:23.003Z",
   "checks": {
     "read_version_snapshot": true,
     "read_site_config": true,
@@ -21,12 +21,14 @@
     "assets/uploads/img-mwg2zhc7-7vjs.png",
     "assets/uploads/img-mwg8jd0t-1tew.png",
     "assets/uploads/img-mwg8jd1g-9osv.png",
+    "assets/uploads/img-mwg8tu78-871o.png",
+    "assets/uploads/img-mwg8tu7t-0s2z.png",
     "data/published.js"
   ],
-  "version_id": "045e0972-25f2-4cff-a807-bb863b9a3214",
-  "version_revision": 14,
+  "version_id": "54aa3640-4bf7-4ca7-824e-4e085434f01e",
+  "version_revision": 19,
   "version_status_before": "building",
-  "media_rows": 4,
+  "media_rows": 6,
   "downloaded_images": [
     {
       "path": "assets/uploads/img-mwg2zhbd-iobd.png",
@@ -43,6 +45,14 @@
     {
       "path": "assets/uploads/img-mwg8jd1g-9osv.png",
       "bytes": 1599
+    },
+    {
+      "path": "assets/uploads/img-mwg8tu78-871o.png",
+      "bytes": 1599
+    },
+    {
+      "path": "assets/uploads/img-mwg8tu7t-0s2z.png",
+      "bytes": 1599
     }
   ],
   "storage_probe": {
@@ -56,5 +66,5 @@
   "created_detail_pages": [],
   "skipped_existing_pages": 0,
   "bad_refs": [],
-  "finished_at": "2026-11-14T10:01:20.764Z"
+  "finished_at": "2026-11-14T10:09:32.517Z"
 }
