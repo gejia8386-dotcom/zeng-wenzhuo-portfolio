@@ -8,12 +8,12 @@
 
 import fs from 'node:fs';
 
-const URL = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
+const BASE = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
 const SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 const ANON = process.env.SUPABASE_ANON_KEY || '';
 const TABLES = ['admin_users', 'site_config', 'site_versions', 'media_assets'];
 
-if (!URL || !SERVICE) {
+if (!BASE || !SERVICE) {
   console.error('缺少 SUPABASE_URL 或 SUPABASE_SERVICE_ROLE_KEY 环境变量');
   process.exit(1);
 }
@@ -28,7 +28,7 @@ function headers(key, extra = {}) {
 }
 
 async function get(path, key, opts = {}) {
-  const res = await fetch(`${URL}${path}`, {
+  const res = await fetch(`${BASE}${path}`, {
     method: 'GET',
     headers: headers(key, opts.headers || {}),
   });
@@ -44,7 +44,7 @@ function mask(s) { return s ? `${String(s).slice(0, 6)}…（已脱敏）` : '(�
 
 log('# Supabase 实际结构自检（只读）');
 log('');
-log(`- Project host: ${new URL(URL).host}`);
+log(`- Project host: ${new URL(BASE).host}`);
 log(`- 服务端密钥: 已注入，类型 ${SERVICE.slice(0, 3) === 'sb_' ? 'new-style secret key' : 'JWT'}，长度 ${SERVICE.length}（值不输出）`);
 log('');
 
@@ -101,7 +101,7 @@ log('');
 
 /* 4. 私有对象数量（列表接口，不下载内容） */
 log('## 4. 私有桶对象');
-const objs = await fetch(`${URL}/storage/v1/object/list/portfolio-uploads`, {
+const objs = await fetch(`${BASE}/storage/v1/object/list/portfolio-uploads`, {
   method: 'POST',
   headers: headers(SERVICE),
   body: JSON.stringify({ prefix: '', limit: 100, offset: 0, sortBy: { column: 'name', order: 'asc' } }),
