@@ -23,6 +23,7 @@
     visual:   ['视觉设置', 'VISUAL / 颜色 · 字体 · 间距'],
     preview:  ['实时预览', 'LIVE PREVIEW / 桌面 · 手机'],
     data:     ['数据安全', 'DATA / 备份 · 导入导出 · 发布'],
+    cloud:    ['云端管理', 'CLOUD / 登录 · 草稿同步 · 云端发布'],
     help:     ['使用说明', 'GUIDE / 保存机制与发布流程']
   };
 
@@ -125,7 +126,11 @@
     saveTimer = setTimeout(saveNow, 300);
   }
   function saveNow() {
-    return Store.saveDraft(cfg).then(function () { setStatus('草稿已保存', false); })
+    return Store.saveDraft(cfg).then(function () {
+      setStatus('草稿已保存', false);
+      /* 本地先落盘，再异步同步云端（云端失败不影响本地） */
+      if (window.CloudAdmin) window.CloudAdmin.onLocalSave();
+    })
       .catch(function (err) { setStatus('保存失败', true); toast(err.message || '保存失败', true); });
   }
   function undo() {
@@ -159,6 +164,7 @@
     else if (currentView === 'data') renderData();
     else if (currentView === 'help') renderHelp();
     else if (currentView === 'preview') renderPreviewOptions();
+    else if (currentView === 'cloud' && window.CloudAdmin) window.CloudAdmin.renderView();
     if (currentView !== 'projects') { /* 其他视图无项目列表 */ }
   }
 
@@ -715,6 +721,8 @@
       compressImage(input.files[0], function (url) {
         var k = uid('img');
         cfg.media[k] = url;
+        /* 云端登录时自动上传到私有桶并登记 media_assets */
+        if (window.CloudAdmin) window.CloudAdmin.onMediaAdded(k, url);
         cb('media:' + k);
       });
     };
@@ -1166,7 +1174,25 @@
         $('#proto-hint').innerHTML = ' <b>当前为 file:// 模式</b>：完整发布包导出需改用本地静态服务器（见「使用说明」）。';
       }
       switchView('projects');
+      /* 云端模块（admin-cloud.js）等待草稿就绪后自动拉取云端状态 */
+      if (window.CloudAdmin) window.CloudAdmin.onDraftLoaded();
     }).catch(function (err) { toast('载入失败：' + err.message, true); });
   }
   document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', boot) : boot();
+
+  /* ------------------------------------------------------------ 云端模块桥
+     admin-cloud.js 通过此桥读写后台内部状态（getCfg / replaceCfg 等），
+     避免云逻辑侵入编辑器本体。 */
+  window.ZwzAdmin = {
+    getCfg: function () { return cfg; },
+    replaceCfg: function (c, msg) {
+      cfg = clone(c);
+      selectedId = cfg.projects[0] ? cfg.projects[0].id : null;
+      textProjectId = selectedId;
+      commit(msg || '草稿已载入');
+    },
+    saveLocal: function () { return saveNow(); },
+    toast: toast,
+    getView: function () { return currentView; }
+  };
 })();
