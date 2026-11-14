@@ -97,7 +97,9 @@ async function db<T = unknown>(
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     ...init,
     headers: {
-      apikey: PUBLIC_KEY,
+      /* 新旧密钥体系混用会让 PostgREST 报 PGRST301（实测），
+       * apikey 必须与 Authorization 同体系：统一用 service_role 新密钥 */
+      apikey: SERVICE_KEY,
       Authorization: `Bearer ${SERVICE_KEY}`,
       'Content-Type': 'application/json',
       ...(init.headers as Record<string, string> | undefined),
