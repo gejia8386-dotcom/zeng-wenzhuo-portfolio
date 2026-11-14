@@ -1,0 +1,58 @@
+{
+  "mode": "test",
+  "target_branch": "cloud-test",
+  "output_root": ".cloud-test-output",
+  "github_run_id": "43558349267",
+  "started_at": "2026-11-14T04:47:24.940Z",
+  "checks": {
+    "read_version_snapshot": true,
+    "read_site_config": true,
+    "download_private_images": "no_registered_images",
+    "published_js_parseable": true,
+    "lock_enabled": true,
+    "project_count": 9,
+    "static_pages_count": 9,
+    "no_absolute_asset_paths": true,
+    "all_files_written": true,
+    "overall": true
+  },
+  "files": [
+    "data/published.js",
+    "projects/haiyu-low-altitude.html",
+    "projects/petora.html",
+    "projects/zhenban.html",
+    "projects/south-pearl.html",
+    "projects/binxiaoxun.html",
+    "projects/logo.html",
+    "projects/china-bolivia-40.html",
+    "projects/font-design.html",
+    "projects/type-poster.html"
+  ],
+  "version_id": "1586fcf7-88b2-4a01-a4d7-a53d9f2986d3",
+  "version_revision": 1,
+  "version_status_before": "pending",
+  "media_rows": 0,
+  "downloaded_images": [],
+  "storage_probe": {
+    "ok": true,
+    "uploaded": 67753,
+    "downloaded": 67753,
+    "byte_identical": true
+  },
+  "config_source": "data/original-backup.json (test baseline, 真实数据)",
+  "project_count_in_config": 9,
+  "created_detail_pages": [
+    "projects/haiyu-low-altitude.html",
+    "projects/petora.html",
+    "projects/zhenban.html",
+    "projects/south-pearl.html",
+    "projects/binxiaoxun.html",
+    "projects/logo.html",
+    "projects/china-bolivia-40.html",
+    "projects/font-design.html",
+    "projects/type-poster.html"
+  ],
+  "skipped_existing_pages": 0,
+  "bad_refs": [],
+  "finished_at": "2026-11-14T04:47:31.457Z"
+}
