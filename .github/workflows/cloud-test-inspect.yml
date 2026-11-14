@@ -1,0 +1,37 @@
+# 只读结构自检（测试资产，仅存在于 cloud-test 分支，不合并进 main）
+# 用途：在不暴露任何密钥的前提下，用 service_role 身份核对 Supabase 实际表结构、
+#       版本表/配置表状态、私有 Storage 桶配置，以及 anon 权限边界。
+name: cloud-test-inspect
+
+on:
+  workflow_dispatch:
+    inputs:
+      note:
+        description: '备注（可选）'
+        required: false
+        default: 'read-only structure check'
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout cloud-test
+        uses: actions/checkout@v4
+        with:
+          ref: cloud-test
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Inspect (read only, no secrets printed)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
+        run: node scripts/cloud-inspect.mjs
