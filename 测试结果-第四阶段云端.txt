@@ -78,3 +78,27 @@
   已由管理员在 Dashboard 执行幂等 SQL 补建，详见《数据库变更说明.md》。
 
 结论：第四阶段 Admin 云端接入全部 11 项要求验收通过。
+
+======================================================================
+【正式生产发布验收 · 2026-11-19（用户确认后执行）】
+
+发布前安全清理：
+  ✓ 云端草稿测试封面恢复（haiyu cover: media:img-* → assets/.../01-cover.jpg）
+  ✓ media_assets 6 张测试 PNG 登记清空（草稿与正式站均不含测试图）
+  ✓ main 分支补齐发布脚本（publish-build.mjs / publish-status.mjs）与云端后台代码
+  ✓ 草稿逐字段比对：9 项目 / 0 media 引用 / 0 测试关键词 / cover 全原始
+
+production 发布：
+  ✓ 真实浏览器登录管理员 → UI 触发 production（repository_dispatch(main)）
+  ✓ version_id 98073916-3bcc-47cf-8340-4e87f3be0f60 · r21
+  ✓ GitHub Actions run 44500085158 → success（约 19 秒）
+  ✓ site_versions 回写 success + finished_at
+  ✓ site_config published_revision=21 / published_at 已更新
+
+正式站验证：
+  ✓ 线上 published.js = 云端生成版（16970 B / LOCK=true / r21 / 9 项目）
+  ✓ 无测试残留（media: 0 / 测试关键词 0 / 测试图 0 / 封面原始）
+  ✓ 首页、作品页、详情页、后台、published.js 全部 HTTP 200
+  ✓ 正式站 admin.html 已含云端管理视图与 admin-cloud.js / cloud-config.js
+
+结论：production 发布成功，正式站已上线云端版后台与 r21 内容。
