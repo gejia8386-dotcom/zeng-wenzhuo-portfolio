@@ -593,10 +593,11 @@
     $('#view-data').innerHTML =
     '<div class="card"><div class="card__head"><h2>保存机制说明</h2></div>' +
       '<div class="help-block">' +
-        '<div class="warn"><b>请务必区分三种状态：</b><br>' +
-        '① <b>本地草稿</b>：所有编辑保存在<b>当前浏览器的 IndexedDB</b>，前台页面与预览立即生效；<b>不会写入网站文件，也不会影响其他设备或访客</b>。<br>' +
-        '② <b>已发布内容</b>：只有导出「发布包 ZIP」并把它解压上传到静态托管后，修改才对访客生效。发布包内写入 <code>data/published.js</code> 并锁定，独立可运行。<br>' +
-        '③ <b>原始数据</b>：<code>data/works.js</code>、<code>data/original-backup.json</code> 与 <code>assets/</code> 中的原始图片<b>永不被修改或覆盖</b>；上传的图片写到独立的 <code>assets/uploads/</code>。' +
+        '<div class="warn"><b>请务必区分三个状态：</b><br>' +
+        '① <b>本地草稿</b>：编辑保存在<b>当前浏览器的 IndexedDB</b>，前台与预览立即生效；只是本机状态，不影响其他设备或访客。<br>' +
+        '② <b>云端草稿</b>：在「06 云端管理」登录白名单管理员后，本地保存会自动同步云端（带 1.5 秒防抖）；换设备登录可继续编辑。若云端与本地不一致会弹窗让你选择，绝不静默覆盖。<br>' +
+        '③ <b>正式发布</b>：云端管理页选 production 并二次确认，由 publish 函数 + GitHub Actions 构建并更新正式站（写入并锁定 <code>data/published.js</code>）。未登录云端时，也可用「导出发布包 ZIP」离线发布。<br>' +
+        '<b>原始数据</b> <code>data/works.js</code> / <code>data/original-backup.json</code> 与 <code>assets/</code> 原始图片<b>永不被修改或覆盖</b>；上传图片写到独立的 <code>assets/uploads/</code>。' +
         '</div>' +
         '<div>删除项目采用<b>软删除</b>：项目完整移入回收站，随时可恢复，不会丢失任何原始项目资料。</div>' +
       '</div></div>' +
@@ -677,10 +678,9 @@
         '<li>手机端不加载鼠标效果，改为按下反馈、灯箱左右滑动切换与下拉关闭；后台本身不加载动效，用「实时预览」查看。</li>' +
       '</ul>' +
       '<h3>保存与发布（重要）</h3>' +
-      '<div class="warn">这是<b>纯静态网站，没有服务器数据库</b>。编辑只存在于当前浏览器。' +
-      '要让修改对外生效，必须点「导出发布包 ZIP」，把解压后的整个目录上传到静态托管；' +
-      '发布包里的 <code>data/published.js</code> 会锁定为已发布内容，不依赖任何后台或浏览器草稿。' +
-      '「导出完整配置 JSON」用于备份 / 换设备继续编辑，导入到任意一份本站后台即可恢复。</div>' +
+      '<div class="warn">内容有三个状态：<b>本地草稿</b>（当前浏览器 IndexedDB）→ <b>云端草稿</b>（登录云端后台后自动同步 Supabase）→ <b>正式发布</b>（云端管理页选 production，由 GitHub Actions 构建更新正式站）。' +
+      '未登录云端时，可点「导出发布包 ZIP」手动上传到静态托管；发布包内 <code>data/published.js</code> 会锁定为已发布内容。' +
+      '「导出完整配置 JSON」与本地备份始终是云端故障时的恢复手段，导入到任意一份本站后台即可恢复。</div>' +
       '<h3>建议运行环境</h3><ul>' +
         '<li>用本地静态服务器打开后台可获得全部功能：<code>python3 -m http.server 8765</code> → <code>http://127.0.0.1:8765/admin.html</code>。</li>' +
         '<li><code>file://</code> 直接双击也能编辑、预览、保存草稿与导入导出配置；仅「导出完整发布包」需要服务器读取站点文件。</li>' +

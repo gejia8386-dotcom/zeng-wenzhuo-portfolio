@@ -27,6 +27,10 @@
   var adminReady = false;    /* admin.js 草稿已载入 */
   var cloudReadyRan = false;
   var suspendAutoSync = false; /* 载入云端草稿后跳过一次回写，避免空转 */
+  var localKeptPending = false; /* 用户在「云端/本地草稿不一致」时选了保留本地：
+                                  未经明确确认前，禁止自动同步把旧本地草稿写回云端 */
+  var sessionEpoch = 0;         /* 会话代次：logout/重新登录时递增，用于让过期的
+                                  异步回调失效（避免退出后 PATCH 返回时 cloud 已为 null） */
   var state = {
     offline: false,
     publishing: null,        /* {version_id, revision, mode, trigger, startedAt} */
@@ -186,7 +190,16 @@
       fetch(CC.url + '/auth/v1/logout', { method: 'POST', headers: authHeaders(tok) }).catch(function () {});
     }
     clearSession();
+    sessionEpoch++;  /* 让本次会话进行中的所有异步回调失效 */
     cloud = null;
+    /* 关键：重置云端初始化状态。否则下次登录后 cloudReady() 因 cloudReadyRan=true
+       直接返回，不再比对云端/本地草稿，也不再重新执行媒体审计。 */
+    cloudReadyRan = false;
+    adminReady = false;
+    localKeptPending = false;
+    suspendAutoSync = false;
+    clearTimeout(onLocalSave._t);
+    clearTimeout(loadCloudDraft._t);
     state.lastSync = null; state.publishing = null; state.versions = [];
     state.mediaQueue = {}; state.mediaErrors = {};
     try { sessionStorage.removeItem(SS_MODE); } catch (e) {}
@@ -387,7 +400,7 @@
       else {
         dialog('检测到云端草稿',
           '云端保存有草稿（r' + cloud.revision + '，更新于 ' + esc(fmtTime(cloud.updated_at)) + '），与当前本地草稿不一致。<br>' +
-          '<span class="hint">载入云端会替换本地草稿（替换前自动进入撤销历史，可撤销）；保留本地则下次保存时会覆盖云端。</span>',
+          '<span class="hint">载入云端会替换本地草稿（替换前自动进入撤销历史，可撤销）。若保留本地，云端不会被自动覆盖——需你在「06 云端管理」里明确选择「用本地覆盖云端」。在此之前本地编辑只存本地。</span>',
           [
             { label: '载入云端草稿', act: 'pd-load', cls: 'btn--primary' },
             { label: '保留本地草稿', act: 'pd-keep' }
@@ -411,6 +424,10 @@
   function onLocalSave() {
     if (suspendAutoSync) { suspendAutoSync = false; return; }
     if (!isActive()) return;
+    /* 用户选择「保留本地草稿」后，绝不自动把本地内容写回云端——
+       那会在用户不知情的情况下用旧本地草稿覆盖较新的云端草稿。
+       必须先由用户明确确认覆盖（cf-overwrite）或载入云端（pd-load）。 */
+    if (localKeptPending) return;
     clearTimeout(onLocalSave._t);
     onLocalSave._t = setTimeout(function () { saveDraftToCloud('auto'); }, 1500);
   }
@@ -420,6 +437,7 @@
     if (state.syncing) { state.pendingSave = true; return Promise.resolve({ queued: true }); }
     state.syncing = true;
     renderCloudIfActive();
+    var myEpoch = sessionEpoch;
     var myRev = cloud.revision;
     var payload = draftPayload();
     if (!payload) { state.syncing = false; return Promise.resolve({ skipped: true }); }
@@ -428,12 +446,15 @@
       { draft: payload, revision: myRev + 1, updated_by: session.user.id, updated_at: new Date().toISOString() },
       { Prefer: 'return=representation' }
     ).then(function (r) {
+      /* 会话已切换（退出/重新登录）：丢弃这次过期响应，不触碰新会话状态 */
+      if (myEpoch !== sessionEpoch || !cloud) return { ok: false, stale: true };
       if (r.status === 401) { /* token 失效：置 pending 由 finally 统一重试，避免同步并发 */ state.pendingSave = true; return { ok: false, retry: true }; }
       if (r.status === 42501 || r.status === 403) throw new Error('无云端写入权限（账号可能已被移出白名单）');
       var rows = Array.isArray(r.body) ? r.body : [];
       if (r.ok && rows.length > 0) {
         cloud.revision = Number(rows[0].revision) || (myRev + 1);
         cloud.updated_at = rows[0].updated_at || new Date().toISOString();
+        localKeptPending = false;
         state.lastSync = { ok: true, at: new Date().toISOString(), revision: cloud.revision, reason: reason };
         renderCloudIfActive(); renderChip();
         if (reason !== 'auto') toast('草稿已保存到云端（r' + cloud.revision + '）');
@@ -457,11 +478,13 @@
         });
       });
     }).catch(function (err) {
+      if (myEpoch !== sessionEpoch || !cloud) return { ok: false, stale: true };
       state.lastSync = { ok: false, at: new Date().toISOString(), message: err.message || '网络错误' };
       renderCloudIfActive();
       toast('云端保存失败：' + (err.message || '网络错误') + '。本地草稿已保存，不会丢失。', true);
       return { ok: false, error: err.message };
     }).finally(function () {
+      if (myEpoch !== sessionEpoch) return; /* 过期会话不改动新会话的 syncing/pending */
       state.syncing = false;
       if (state.pendingSave) { state.pendingSave = false; saveDraftToCloud('auto'); }
     });
@@ -485,6 +508,7 @@
       });
       var finish = function () {
         try {
+          localKeptPending = false;
           var cfgObj = Store.fromJSON(JSON.stringify(obj));
           suspendAutoSync = true;
           window.ZwzAdmin.replaceCfg(cfgObj, '已载入云端草稿（r' + cloud.revision + '）');
@@ -799,12 +823,17 @@
           '<span class="k">云端更新时间</span><span>' + esc(fmtTime(cloud.updated_at)) + '</span>' +
           '<span class="k">草稿内容</span><span>文字 / 排序 / 分类 / 视觉设置 / 显示状态（图片存私有桶，不占草稿体积）</span>' +
         '</div>' +
+        (localKeptPending
+          ? '<div class="notice-cloud">本地草稿与云端不一致，已暂停自动同步。当前本地编辑只保存在本机，<b>不会覆盖较新的云端草稿</b>。请明确选择：载入云端，或用本地覆盖云端。</div>'
+          : '') +
         '<div class="chips" style="margin-top:14px">' +
           '<button class="btn btn--primary" data-cloudact="save-now" ' + (state.syncing ? 'disabled' : '') + '>☁ 立即保存到云端</button>' +
           '<button class="btn" data-cloudact="load-cloud">↓ 从云端载入草稿</button>' +
+          (localKeptPending ? '<button class="btn btn--danger" data-cloudact="pd-overwrite">用本地覆盖云端</button>' : '') +
         '</div>' +
         '<div class="hint" style="margin-top:12px">每次本地保存后会自动同步云端（带 1.5 秒防抖）。' +
-        '保存失败时本地草稿已先落盘，不会丢失；多设备并发修改由 revision 乐观锁保护，冲突时会弹窗让你选择，绝不静默覆盖。</div>' +
+        '保存失败时本地草稿已先落盘，不会丢失；多设备并发修改由 revision 乐观锁保护，冲突时会弹窗让你选择，绝不静默覆盖。' +
+        '若选择「保留本地草稿」，自动同步会暂停，直到你明确载入云端或覆盖云端。</div>' +
         '</div>';
 
       /* —— 图片同步 —— */
@@ -937,9 +966,25 @@
     switch (act) {
       case 'ed-upload': saveDraftToCloud('initial-upload').then(function () { auditMedia(); }); break;
       case 'ed-skip': break;
-      case 'pd-load': loadCloudDraft(); break;
-      case 'pd-keep': break; /* 保留本地：下次保存覆盖云端（用户已知情） */
-      case 'cf-load': loadCloudDraft(); break;
+      case 'pd-load': localKeptPending = false; loadCloudDraft(); break;
+      case 'pd-keep':
+        /* 保留本地：暂停自动同步，防止旧本地草稿未经确认覆盖较新的云端草稿。
+           用户需在云端管理页明确点「用本地覆盖云端」才会写回。 */
+        localKeptPending = true;
+        clearTimeout(onLocalSave._t);
+        renderCloudIfActive();
+        toast('已保留本地草稿；自动同步已暂停，云端草稿未被改动', true);
+        break;
+      case 'pd-overwrite':
+        /* 用户明确确认：用本地草稿覆盖云端。先刷新到云端最新 revision，
+           再走 saveDraftToCloud 的乐观锁写入，避免误覆盖第三方更新。 */
+        localKeptPending = false;
+        fetchConfigStatus(false).then(function (row) {
+          if (row) cloud.revision = Number(row.revision) || cloud.revision;
+          return saveDraftToCloud('overwrite');
+        }).then(function () { renderCloudIfActive(); });
+        break;
+      case 'cf-load': localKeptPending = false; loadCloudDraft(); break;
       case 'cf-overwrite':
         fetchConfigStatus(false).then(function (row) {
           if (row) cloud.revision = Number(row.revision) || cloud.revision;
