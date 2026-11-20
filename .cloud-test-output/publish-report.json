@@ -2,8 +2,8 @@
   "mode": "test",
   "target_branch": "cloud-test",
   "output_root": ".cloud-test-output",
-  "github_run_id": "43583900776",
-  "started_at": "2026-11-14T10:09:23.003Z",
+  "github_run_id": "44716195757",
+  "started_at": "2026-11-20T10:05:29.825Z",
   "checks": {
     "read_version_snapshot": true,
     "read_site_config": true,
@@ -17,42 +17,22 @@
     "overall": true
   },
   "files": [
-    "assets/uploads/img-mwg2zhbd-iobd.png",
-    "assets/uploads/img-mwg2zhc7-7vjs.png",
-    "assets/uploads/img-mwg8jd0t-1tew.png",
-    "assets/uploads/img-mwg8jd1g-9osv.png",
-    "assets/uploads/img-mwg8tu78-871o.png",
-    "assets/uploads/img-mwg8tu7t-0s2z.png",
+    "assets/uploads/img-reg-1795169033177.png",
+    "assets/uploads/img-reg-1795169104844.png",
     "data/published.js"
   ],
-  "version_id": "54aa3640-4bf7-4ca7-824e-4e085434f01e",
-  "version_revision": 19,
+  "version_id": "f162dc6a-927c-4ec9-b6ac-2d52c4387096",
+  "version_revision": 28,
   "version_status_before": "building",
-  "media_rows": 6,
+  "media_rows": 2,
   "downloaded_images": [
     {
-      "path": "assets/uploads/img-mwg2zhbd-iobd.png",
-      "bytes": 1599
+      "path": "assets/uploads/img-reg-1795169033177.png",
+      "bytes": 70
     },
     {
-      "path": "assets/uploads/img-mwg2zhc7-7vjs.png",
-      "bytes": 1599
-    },
-    {
-      "path": "assets/uploads/img-mwg8jd0t-1tew.png",
-      "bytes": 1599
-    },
-    {
-      "path": "assets/uploads/img-mwg8jd1g-9osv.png",
-      "bytes": 1599
-    },
-    {
-      "path": "assets/uploads/img-mwg8tu78-871o.png",
-      "bytes": 1599
-    },
-    {
-      "path": "assets/uploads/img-mwg8tu7t-0s2z.png",
-      "bytes": 1599
+      "path": "assets/uploads/img-reg-1795169104844.png",
+      "bytes": 70
     }
   ],
   "storage_probe": {
@@ -66,5 +46,5 @@
   "created_detail_pages": [],
   "skipped_existing_pages": 0,
   "bad_refs": [],
-  "finished_at": "2026-11-14T10:09:32.517Z"
+  "finished_at": "2026-11-20T10:05:36.528Z"
 }
